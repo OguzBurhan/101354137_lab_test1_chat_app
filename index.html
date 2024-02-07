@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <title>Chat Room</title>
+</head>
+<body>
+  <div class="container">
+    <div id="chat-room">
+      <!-- Chat room content -->
+    </div>
+  </div>
+
+  <!-- jQuery and Bootstrap JS -->
+  <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  <!-- Socket.IO Client -->
+  <script src="/socket.io/socket.io.js"></script>
+
+  <div id="messages"></div>
+<form id="form">
+  <input id="input" autocomplete="off" autofocus />
+  <button>Send</button>
+</form>
+
+  <script>
+    $(document).ready(function() {
+      var socket = io();
+
+      const messages = document.getElementById('messages');
+      const form = document.getElementById('form');
+      const input = document.getElementById('input');
+
+      form.addEventListener('submit', (e) => {
+        e.preventDefault();
+        if (input.value) {
+          socket.emit('chat message', input.value);
+          input.value = '';
+        }
+      });
+
+      socket.on('chat message', (msg) => {
+        const item = document.createElement('li');
+        item.textContent = msg;
+        messages.appendChild(item);
+        window.scrollTo(0, document.body.scrollHeight);
+      });
+    });
+  </script>
+  
+</body>
+</html>

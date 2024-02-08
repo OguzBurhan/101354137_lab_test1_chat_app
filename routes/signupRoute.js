@@ -1,24 +1,25 @@
+const express = require('express');
 const bcrypt = require('bcrypt');
-const saltRounds = 10; 
+const User = require('../models/User'); // Adjust the path to your User model
+const router = express.Router();
+const saltRounds = 10;
 
-app.post('/signup', async (req, res) => {
+
+router.post('/signup', async (req, res) => {
     try {
-        // Hash the password
         const hashedPassword = await bcrypt.hash(req.body.password, saltRounds);
-
-        // Create a new user instance
         const newUser = new User({
             username: req.body.username,
+            firstname: req.body.firstname,
+            lastname: req.body.lastname,
             password: hashedPassword
-            // ... other fields ...
         });
-
-        // Save the user to the database
         await newUser.save();
-
-        // Send a response (avoid sending back the password, even if it's hashed)
         res.status(201).send({ message: "User created successfully" });
     } catch (error) {
         res.status(500).send({ message: "Error creating user" });
     }
 });
+
+
+module.exports = router;
